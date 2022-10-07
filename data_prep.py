@@ -3,9 +3,8 @@ import numpy as np
 import argparse
 
 def build_dataset(restaurant_idx):
-    df = pd.read_csv(f'data/restaurant/restaurant-{restaurant_idx}-orders.csv')
+    df = pd.read_csv(f'data/restaurant/restaurant-{restaurant_idx}-orders.csv',parse_dates=['Order Date'],dayfirst=True)
     
-    df['Order Date'] = pd.to_datetime(df['Order Date'])
     df['Weekday'] = df['Order Date'].dt.day_of_week
     
     weather_df = pd.read_csv('data/weather/london_weather.csv')
