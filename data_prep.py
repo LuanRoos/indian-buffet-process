@@ -11,28 +11,6 @@ def build_dataset(restaurant_idx):
     df['date'] = df['Order Date'].dt.date
     
     df.to_pickle(f'data/restaurant/processed{restaurant_idx}.pkl')
-    
-    # df = pd.read_csv(f'data/restaurant/restaurant-{restaurant_idx}-orders.csv',parse_dates=['Order Date'],dayfirst=True)
-    # df = df.loc[df['Order Date'] >= '2016-07-18']
-    # df['Total Price'] = df['Quantity']*df['Product Price']   
-    # # df['year'] = df['Order Date'].dt.year
-    
-    # # df['Weekday'] = df['Order Date'].dt.day_of_week
-    
-    # # weather_df = pd.read_csv('data/weather/london_weather.csv')
-    
-    # # weather_df['date'] = pd.to_datetime(weather_df['date'], format='%Y%m%d')
-    # # weather_df.drop(columns=['global_radiation', 'pressure'], inplace=True)
-    
-    # df['date'] = df['Order Date'].dt.date
-    # df.to_pickle(f'data/restaurant/processed{restaurant_idx}.pkl')
-
-    # # weather_df['date'] = weather_df['date'].dt.date
-    
-    # # merge_df = pd.merge(df, weather_df, on='date', how='left')
-    # # merge_df.drop(columns=['date'], inplace=True)
-    
-    # # merge_df.to_pickle(f'data/restaurant/processed{restaurant_idx}.pkl')
 
 
 def gen_adjacency(df, num, uniq_items):
@@ -127,7 +105,7 @@ if __name__ == '__main__':
         print('==============================Restaurant 2===============================================')
         print(pop_items2)
         
-    if not config['prof']:
+    if config['prof']:
         if not 'df' in locals():
             df = pd.read_pickle('data/restaurant/processed1.pkl')
         if not 'df2' in locals():
