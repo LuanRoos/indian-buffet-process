@@ -4,25 +4,35 @@ import matplotlib.pyplot as plt
 import argparse
 
 def build_dataset(restaurant_idx):
-    df = pd.read_csv(f'data/restaurant/restaurant-{restaurant_idx}-orders.csv',parse_dates=['Order Date'],dayfirst=True)
+    df = pd.read_csv(f'./data/restaurant/restaurant-{restaurant_idx}-orders.csv', delimiter=',', parse_dates=['Order Date'], dayfirst=True)
+    
     df = df.loc[df['Order Date'] >= '2016-07-18']
-    df['Total Price'] = df['Quantity']*df['Product Price']   
-    df['year'] = df['Order Date'].dt.year
-    
-    df['Weekday'] = df['Order Date'].dt.day_of_week
-    
-    weather_df = pd.read_csv('data/weather/london_weather.csv')
-    
-    weather_df['date'] = pd.to_datetime(weather_df['date'], format='%Y%m%d')
-    weather_df.drop(columns=['global_radiation', 'pressure'], inplace=True)
-    
+    df['Total Price'] = df['Quantity']*df['Product Price'] 
     df['date'] = df['Order Date'].dt.date
-    weather_df['date'] = weather_df['date'].dt.date
     
-    merge_df = pd.merge(df, weather_df, on='date', how='left')
-    merge_df.drop(columns=['date'], inplace=True)
+    df.to_pickle(f'data/restaurant/processed{restaurant_idx}.pkl')
     
-    merge_df.to_pickle(f'data/restaurant/processed{restaurant_idx}.pkl')
+    # df = pd.read_csv(f'data/restaurant/restaurant-{restaurant_idx}-orders.csv',parse_dates=['Order Date'],dayfirst=True)
+    # df = df.loc[df['Order Date'] >= '2016-07-18']
+    # df['Total Price'] = df['Quantity']*df['Product Price']   
+    # # df['year'] = df['Order Date'].dt.year
+    
+    # # df['Weekday'] = df['Order Date'].dt.day_of_week
+    
+    # # weather_df = pd.read_csv('data/weather/london_weather.csv')
+    
+    # # weather_df['date'] = pd.to_datetime(weather_df['date'], format='%Y%m%d')
+    # # weather_df.drop(columns=['global_radiation', 'pressure'], inplace=True)
+    
+    # df['date'] = df['Order Date'].dt.date
+    # df.to_pickle(f'data/restaurant/processed{restaurant_idx}.pkl')
+
+    # # weather_df['date'] = weather_df['date'].dt.date
+    
+    # # merge_df = pd.merge(df, weather_df, on='date', how='left')
+    # # merge_df.drop(columns=['date'], inplace=True)
+    
+    # # merge_df.to_pickle(f'data/restaurant/processed{restaurant_idx}.pkl')
 
 
 def gen_adjacency(df, num, uniq_items):
@@ -70,8 +80,7 @@ def find_profitable_items(df):
             cutoff = idx + 1
             break
     
-    item_df['Item Name'][:cutoff].tolist()
-    return item_df
+    return item_df['Item Name'][:cutoff].tolist()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Prepare data for training")
@@ -124,8 +133,8 @@ if __name__ == '__main__':
         if not 'df2' in locals():
             df2 = pd.read_pickle('data/restaurant/processed2.pkl')
             
-        prof1 = find_profitable_items(df)
-        prof2 = find_profitable_items(df2)
+        prof1 = find_profitable_items(df)[:20]
+        prof2 = find_profitable_items(df2)[:20]
         
         print('==============================Restaurant 1===============================================')
         print(prof1)
